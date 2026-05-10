@@ -169,25 +169,6 @@ YAML **keys are stable**; adjust comments and values only.
 
 ---
 
-## Building
-
-Requires **Java 17**.
-
-```bash
-./gradlew clean shadowJar
-```
-
-Slim JAR (Gson + **relocated bStats**): `build/libs/keepmegrowing-2.0.jar`  
-
-All DB drivers embedded:
-
-```bash
-./gradlew shadowJar -PbundleAllDbDrivers=true
-```
-
-→ `build/libs/keepmegrowing-bundled-2.0.jar`
-
----
 
 ## bStats
 
