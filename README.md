@@ -22,11 +22,11 @@ Drop your marketing screenshots into `assets/` as **`crops.png`** and **`animals
 
 ### Supported crops (offline pacing)
 
-![Supported crops](assets/crops.png)
+![Supported crops](https://raw.githubusercontent.com/vanillaxtra/keepmegrowing/refs/heads/main/assets/allcrops.png)
 
 ### Supported animals (offline pacing, MC 1.10+)
 
-![Supported animals](assets/animals.png)
+![Supported animals](https://raw.githubusercontent.com/vanillaxtra/keepmegrowing/refs/heads/main/assets/allmobs.png)
 
 ---
 
