@@ -1,0 +1,23 @@
+name: KeepMeGrowing
+version: '2.0'
+description: KeepMeGrowing offline crop and passive mob pacing
+author: notauthorised
+main: com.keepmegrowing.KeepMeGrowing
+softdepend: [WorldGuard]
+api-version: 1.13
+commands:
+  keepmegrowing:
+    description: Main KeepMeGrowing command
+    usage: /<command> - help and admin actions
+    aliases: [kmg]
+    permission: keepmegrowing.admin
+  growth:
+    description: Growth rate (sprint, freeze, rate)
+    usage: /<command> reload|debug|sprint|freeze|unfreeze|rate <n>
+    aliases: [gth]
+    permission: keepmegrowing.admin
+    
+permissions:
+  keepmegrowing.admin:
+    description: KeepMeGrowing admin commands
+    default: op

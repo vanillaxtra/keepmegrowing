@@ -1,0 +1,130 @@
+# Distant farms: you do not need to stand there—only that the chunk unloads and
+# later loads again. Only tracked crops count by default (see unload-chunk-scan-crops).
+
+
+
+# -----------------------------------------------------------------------------
+# Plants (minutes to approximate “full growth” pacing)
+# -----------------------------------------------------------------------------
+# Lower = faster offline growth. Vanilla uses random ticks; these values are
+# tuned to feel roughly like common survival pacing for loaded chunks.
+plants-minutes-to-full-growth:
+  CARROTS: 20
+  POTATOES: 20
+  WHEAT: 20
+  BEETROOTS: 16
+  NETHER_WART: 14
+  COCOA: 12
+  OAK_SAPLING: 12
+  SPRUCE_SAPLING: 12
+  BIRCH_SAPLING: 12
+  JUNGLE_SAPLING: 12
+  ACACIA_SAPLING: 12
+  DARK_OAK_SAPLING: 12
+  CACTUS: 22
+  SUGAR_CANE: 22
+  MELON_STEM: 20
+  PUMPKIN_STEM: 20
+  KELP: 24
+  SWEET_BERRY_BUSH: 18
+  BAMBOO: 14
+  WEEPING_VINES: 24
+  TWISTING_VINES: 24
+  CAVE_VINES: 20
+  MANGROVE_PROPAGULE: 14
+  CHERRY_SAPLING: 12
+  TORCHFLOWER: 18
+  PITCHER: 18
+
+
+# -----------------------------------------------------------------------------
+# Global growth rate (plugin-side, not the server /tick command)
+# -----------------------------------------------------------------------------
+# Effective multiplier = base-multiplier × sprint-multiplier when sprint is on
+# (see /growth sprint). Set to 0 behaviourally via /growth freeze.
+growth-rate:
+  base-multiplier: 1.0
+  sprint-multiplier: 5.0
+
+
+# -----------------------------------------------------------------------------
+# Loaded chunks (multiplier while someone keeps the chunk loaded)
+# -----------------------------------------------------------------------------
+# When a chunk stays loaded, vanilla still random-ticks crops; these tasks add
+# extra plugin-side growth on the same schedule so /growth rate and sprint
+# still matter. Set to 0 to disable (offline-only behaviour).
+#
+# Period is in server ticks (20 ticks ≈ 1 second). Delta time uses period × 50 ms.
+loaded-chunk-growth:
+  crop-tick-interval-ticks: 120
+  mob-tick-interval-ticks: 120
+
+
+# -----------------------------------------------------------------------------
+# Optional: discover crops on chunk unload
+# -----------------------------------------------------------------------------
+# Default: only blocks you place (or change) are tracked—natural crops in a farm
+# are invisible to the plugin until you touch them. When enabled, each chunk
+# unload scans all blocks in the chunk for registered crop materials (expensive).
+unload-chunk-scan-crops:
+  enabled: false
+
+
+# -----------------------------------------------------------------------------
+# Mobs (minutes for passive ageing / special cases)
+# -----------------------------------------------------------------------------
+# Baby animals use these as pacing hints. SHEEP_WOOL is time for wool to
+# regrow on a sheared sheep while the chunk was unloaded.
+mobs-minutes-to-full-growth:
+  CHICKEN: 20
+  PIG: 20
+  COW: 20
+  SHEEP: 20
+  SHEEP_WOOL: 10
+  MUSHROOM_COW: 20
+  RABBIT: 20
+  WOLF: 20
+  OCELOT: 20
+  HORSE: 20
+  VILLAGER: 20
+  POLAR_BEAR: 20
+  MULE: 20
+  DONKEY: 20
+  LLAMA: 20
+  TURTLE: 20
+  TRADER_LLAMA: 20
+  FOX: 20
+  CAT: 20
+  BEE: 20
+  PANDA: 20
+  STRIDER: 20
+  GOAT: 20
+  AXOLOTL: 20
+  FROG: 20
+  TADPOLE: 20
+  SNIFFER: 40
+  CAMEL: 20
+  ARMADILLO: 20
+
+
+# Chunks in these worlds are ignored entirely.
+blacklisted-worlds:
+  - world1
+
+# If true, spawn chunks are allowed to unload (not keep spawn in memory) for
+# worlds that are not blacklisted, so offline growth can apply near spawn
+# where vanilla would otherwise need a nearby player.
+disable-spawn-chunks: false
+
+
+database:
+  type: JSON
+  host: localhost
+  port: 3306
+  name: offline_growth
+  username: username
+  password: password
+  backup-period: 5
+  use-ssl: false
+  prefix-character: ''
+  mongodb-connection-uri: ''
