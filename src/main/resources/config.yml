@@ -50,14 +50,13 @@ growth-rate:
 # -----------------------------------------------------------------------------
 # Loaded chunks (multiplier while someone keeps the chunk loaded)
 # -----------------------------------------------------------------------------
-# When a chunk stays loaded, vanilla still random-ticks crops; these tasks add
-# extra plugin-side growth on the same schedule so /growth rate and sprint
-# still matter. Set to 0 to disable (offline-only behaviour).
-#
-# Period is in server ticks (20 ticks ≈ 1 second). Delta time uses period × 50 ms.
+# When a chunk stays loaded, vanilla still random-ticks crops. These tasks optionally
+# add extra plugin-side growth so /growth rate and sprint affect online farms.
+# Default 0 = offline-only catch-up (normal vanilla speed while chunks stay loaded).
+# Set above 0 to opt in (period in server ticks, 20 ticks ≈ 1 second).
 loaded-chunk-growth:
-  crop-tick-interval-ticks: 120
-  mob-tick-interval-ticks: 120
+  crop-tick-interval-ticks: 0
+  mob-tick-interval-ticks: 0
 
 
 # -----------------------------------------------------------------------------

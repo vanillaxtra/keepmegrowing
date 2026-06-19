@@ -32,7 +32,7 @@ public abstract class AbstractCropGrowth {
         int n = this.a(blockState);
         AbstractCropGrowth a2 = this;
         int n2 = a2.d;
-        int n3 = (int)((double)this.f * d);
+        int n3 = Math.max(1, (int) ((double) this.f / d));
         if (n == 999) {
             return true;
         }

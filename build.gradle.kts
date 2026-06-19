@@ -1,10 +1,10 @@
 plugins {
     java
-    id("com.gradleup.shadow") version "8.3.6"
+    id("com.gradleup.shadow") version "9.4.2"
 }
 
 group = "com.keepmegrowing"
-version = "2.0"
+version = "2.1"
 description = "KeepMeGrowing"
 
 java {

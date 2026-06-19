@@ -40,8 +40,8 @@ public final class KeepMeGrowingConfig {
             this.blacklistedWorlds.add(worldName);
         }
         this.unloadSpawnChunks = config.getBoolean("disable-spawn-chunks", false);
-        this.loadedChunkCropTickTicks = config.getInt("loaded-chunk-growth.crop-tick-interval-ticks", 120);
-        this.loadedChunkMobTickTicks = config.getInt("loaded-chunk-growth.mob-tick-interval-ticks", 120);
+        this.loadedChunkCropTickTicks = config.getInt("loaded-chunk-growth.crop-tick-interval-ticks", 0);
+        this.loadedChunkMobTickTicks = config.getInt("loaded-chunk-growth.mob-tick-interval-ticks", 0);
         this.scanChunkOnUnload =
                 config.getBoolean("unload-chunk-scan-crops.enabled", false);
         final KeepMeGrowingConfig self = this;

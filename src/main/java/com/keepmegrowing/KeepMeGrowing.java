@@ -47,7 +47,11 @@ public class KeepMeGrowing extends JavaPlugin {
         VersionMaterials.a();
         if (VersionMaterials.b()) {
             String err =
-                    "This plugin requires minecraft >= 1.9 (Current: " + Bukkit.getBukkitVersion() + ")";
+                    "This plugin requires minecraft >= 1.9 (Bukkit: "
+                            + Bukkit.getBukkitVersion()
+                            + ", game: "
+                            + VersionMaterials.getResolvedGameVersion()
+                            + ")";
             this.getLogger().log(Level.SEVERE, err);
             this.getServer().getPluginManager().disablePlugin((Plugin) this);
             return;

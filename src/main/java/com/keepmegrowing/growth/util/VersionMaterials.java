@@ -1,71 +1,140 @@
 
 package com.keepmegrowing.growth.util;
 
-import com.keepmegrowing.growth.util.GrowthStageCapable;
-import com.keepmegrowing.growth.util.SaplingPlacementHelper;
-import com.keepmegrowing.growth.util.StemBlockHelper;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 public final class VersionMaterials {
-    private static List<String> d;
-    private static Map<String, Integer> e;
+    private static final List<String> LEGACY_VERSIONS = new ArrayList<>();
+
+    static {
+        LEGACY_VERSIONS.add("1.8");
+        LEGACY_VERSIONS.add("1.9");
+        LEGACY_VERSIONS.add("1.10");
+        LEGACY_VERSIONS.add("1.11");
+        LEGACY_VERSIONS.add("1.12");
+        LEGACY_VERSIONS.add("1.13");
+        LEGACY_VERSIONS.add("1.14");
+        LEGACY_VERSIONS.add("1.15");
+        LEGACY_VERSIONS.add("1.16");
+        LEGACY_VERSIONS.add("1.17");
+        LEGACY_VERSIONS.add("1.18");
+        LEGACY_VERSIONS.add("1.19");
+        LEGACY_VERSIONS.add("1.20");
+        LEGACY_VERSIONS.add("1.21");
+    }
+
     public static boolean a;
     public static boolean b;
     public static GrowthStageCapable c;
 
+    private static String resolvedGameVersion;
+    private static boolean versionKnown;
+
     public static void a() {
-        d = new ArrayList<String>();
-        d.add("1.8");
-        d.add("1.9");
-        d.add("1.10");
-        d.add("1.11");
-        d.add("1.12");
-        d.add("1.13");
-        d.add("1.14");
-        d.add("1.15");
-        d.add("1.16");
-        d.add("1.17");
-        d.add("1.18");
-        d.add("1.19");
-        d.add("1.20");
-        d.add("1.21");
-        if (VersionMaterials.b()) {
+        resolvedGameVersion = resolveGameVersion();
+        versionKnown = resolvedGameVersion != null;
+        if (!versionKnown) {
             return;
         }
-        String string = VersionMaterials.c();
-        e = new LinkedHashMap<String, Integer>();
-        int n = 0;
-        for (String string2 : d) {
-            e.put(string2, n);
-            ++n;
-        }
-        if (e.get(string) < e.get("1.13")) {
+        if (usesLegacyMaterials(resolvedGameVersion)) {
             c = new SaplingPlacementHelper();
             a = true;
         } else {
             c = new StemBlockHelper();
+            a = false;
         }
-        if (e.get(string) < e.get("1.10")) {
-            b = true;
-        }
+        b = !supportsMobGrowth(resolvedGameVersion);
     }
 
-    private static String c() {
-        for (int i = d.size() - 1; i >= 0; --i) {
-            String string = d.get(i);
-            if (!Bukkit.getBukkitVersion().contains(string)) continue;
-            return string;
+    public static boolean b() {
+        return !versionKnown;
+    }
+
+    public static String getResolvedGameVersion() {
+        return resolvedGameVersion;
+    }
+
+    private static String resolveGameVersion() {
+        String fromMc = readMinecraftVersion();
+        if (fromMc != null && parseVersionParts(fromMc) != null) {
+            return fromMc;
+        }
+        return matchLegacyBukkitVersion(Bukkit.getBukkitVersion());
+    }
+
+    private static String readMinecraftVersion() {
+        try {
+            Method method = Bukkit.class.getMethod("getMinecraftVersion");
+            Object value = method.invoke(null);
+            if (value instanceof String s && !s.isEmpty()) {
+                return s;
+            }
+        } catch (ReflectiveOperationException ignored) {
         }
         return null;
     }
 
-    public static boolean b() {
-        return VersionMaterials.c() == null;
+    private static String matchLegacyBukkitVersion(String bukkitVersion) {
+        if (bukkitVersion == null || bukkitVersion.isEmpty()) {
+            return null;
+        }
+        for (int i = LEGACY_VERSIONS.size() - 1; i >= 0; i--) {
+            String token = LEGACY_VERSIONS.get(i);
+            if (containsLegacyToken(bukkitVersion, token)) {
+                return token;
+            }
+        }
+        return null;
+    }
+
+    private static boolean containsLegacyToken(String bukkitVersion, String token) {
+        int idx = bukkitVersion.indexOf(token);
+        if (idx < 0) {
+            return false;
+        }
+        if (idx > 0 && Character.isDigit(bukkitVersion.charAt(idx - 1))) {
+            return false;
+        }
+        int after = idx + token.length();
+        return after >= bukkitVersion.length() || !Character.isDigit(bukkitVersion.charAt(after));
+    }
+
+    private static int[] parseVersionParts(String version) {
+        String[] parts = version.split("\\.");
+        if (parts.length < 2) {
+            return null;
+        }
+        try {
+            return new int[] {Integer.parseInt(parts[0]), Integer.parseInt(parts[1])};
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private static boolean usesLegacyMaterials(String version) {
+        int[] parts = parseVersionParts(version);
+        if (parts == null) {
+            return false;
+        }
+        if (parts[0] >= 26) {
+            return false;
+        }
+        return parts[0] == 1 && parts[1] < 13;
+    }
+
+    private static boolean supportsMobGrowth(String version) {
+        int[] parts = parseVersionParts(version);
+        if (parts == null) {
+            return false;
+        }
+        if (parts[0] >= 26) {
+            return true;
+        }
+        return parts[0] > 1 || parts[1] >= 10;
     }
 
     public static Material a(String string) {
