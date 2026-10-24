@@ -21,11 +21,11 @@ public final class EntityGrowthProcessor {
         if (reg == null) {
             return;
         }
-        if (!KeepMeGrowingWorldGuard.allowsGrowth(entity.getLocation())) {
-            return;
-        }
         List<MobGrowthSpec> specs = reg.findSpecs(entity.getType());
         if (specs == null) {
+            return;
+        }
+        if (!KeepMeGrowingWorldGuard.allowsGrowth(entity.getLocation())) {
             return;
         }
         long lastUnloaded = -1L;
@@ -67,11 +67,11 @@ public final class EntityGrowthProcessor {
         if (reg == null) {
             return;
         }
-        if (!KeepMeGrowingWorldGuard.allowsGrowth(entity.getLocation())) {
-            return;
-        }
         List<MobGrowthSpec> specs = reg.findSpecs(entity.getType());
         if (specs == null) {
+            return;
+        }
+        if (!KeepMeGrowingWorldGuard.allowsGrowth(entity.getLocation())) {
             return;
         }
         long ref = System.currentTimeMillis() - dtWallMs;

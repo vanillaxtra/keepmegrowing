@@ -7,6 +7,7 @@ import com.keepmegrowing.growth.util.VersionMaterials;
 import com.keepmegrowing.command.KeepMeGrowingCommand;
 import com.keepmegrowing.listener.WorldLoadListener;
 import com.keepmegrowing.listener.ChunkEntityInitListener;
+import com.keepmegrowing.listener.ChunkEntityLifecycleListener;
 import com.keepmegrowing.storage.ChunkEntitySnapshotService;
 import com.keepmegrowing.mob.MobGrowthRegistry;
 import com.keepmegrowing.listener.ChunkUnloadPersistenceListener;
@@ -83,10 +84,16 @@ public class KeepMeGrowing extends JavaPlugin {
         } else {
             this.mobGrowthRegistry = new MobGrowthRegistry();
             this.mobGrowthRegistry.registerMobs();
-            this.chunkEntitySnapshotService = new ChunkEntitySnapshotService();
-            this.getServer()
-                    .getPluginManager()
-                    .registerEvents((Listener) new ChunkEntityInitListener(), (Plugin) this);
+            if (VersionMaterials.supportsEntityLoadEvents()) {
+                this.getServer()
+                        .getPluginManager()
+                        .registerEvents((Listener) new ChunkEntityLifecycleListener(), (Plugin) this);
+            } else {
+                this.chunkEntitySnapshotService = new ChunkEntitySnapshotService();
+                this.getServer()
+                        .getPluginManager()
+                        .registerEvents((Listener) new ChunkEntityInitListener(), (Plugin) this);
+            }
         }
         this.getServer().getPluginManager().registerEvents((Listener) new ChunkUnloadPersistenceListener(), (Plugin) this);
         this.getServer().getPluginManager().registerEvents((Listener) new PlantBlockInteractListener(), (Plugin) this);
@@ -151,6 +158,9 @@ public class KeepMeGrowing extends JavaPlugin {
 
     public void onDisable() {
         this.stopLoadedGrowthSchedulers();
+        if (this.chunkEntitySnapshotService != null) {
+            this.chunkEntitySnapshotService.shutdown();
+        }
         if (!VersionMaterials.b()) {
             this.chunkStorage.c();
             this.growthConfig.restoreSpawnChunkMemory();

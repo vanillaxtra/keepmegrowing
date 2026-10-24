@@ -12,8 +12,8 @@ import com.keepmegrowing.integration.worldguard.KeepMeGrowingWorldGuard;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 public class PlantChunkObject
 implements DataObject {
@@ -53,18 +53,16 @@ implements DataObject {
         Iterator<PlantBlock> iterator = this.plantLocs.iterator();
         while (iterator.hasNext()) {
             PlantBlock plantPos = iterator.next();
-            if (!KeepMeGrowingWorldGuard.allowsGrowth(plantPos.getBlock(world).getLocation())) {
-                continue;
-            }
-            Material blockType = plantPos.getBlock(world).getType();
-            AbstractCropGrowth growth = cropRegistry.findGrowth(blockType);
+            Block block = plantPos.getBlock(world);
+            AbstractCropGrowth growth = cropRegistry.findGrowth(block.getType());
             if (growth == null) {
                 iterator.remove();
                 continue;
             }
             KeepMeGrowing plugin = KeepMeGrowing.getPluginInstance();
             double mult = plugin != null ? plugin.getGrowthRateController().getEffectiveMultiplier() : 1.0;
-            if (!growth.a(plantPos.getBlock(world).getState(), anchor, mult)) continue;
+            if (!KeepMeGrowingWorldGuard.allowsGrowth(block.getLocation())) continue;
+            if (!growth.a(block.getState(), anchor, mult)) continue;
             iterator.remove();
         }
         return this.plantLocs.isEmpty();
@@ -79,17 +77,17 @@ implements DataObject {
         boolean touched = false;
         while (iterator.hasNext()) {
             PlantBlock plantPos = iterator.next();
-            if (!KeepMeGrowingWorldGuard.allowsGrowth(plantPos.getBlock(world).getLocation())) {
-                continue;
-            }
-            Material blockType = plantPos.getBlock(world).getType();
-            AbstractCropGrowth growth = cropRegistry.findGrowth(blockType);
+            Block block = plantPos.getBlock(world);
+            AbstractCropGrowth growth = cropRegistry.findGrowth(block.getType());
             if (growth == null) {
                 iterator.remove();
                 touched = true;
                 continue;
             }
-            if (growth.a(plantPos.getBlock(world).getState(), syntheticOfflineStart, multiplier)) {
+            if (!KeepMeGrowingWorldGuard.allowsGrowth(block.getLocation())) {
+                continue;
+            }
+            if (growth.a(block.getState(), syntheticOfflineStart, multiplier)) {
                 iterator.remove();
                 touched = true;
             }

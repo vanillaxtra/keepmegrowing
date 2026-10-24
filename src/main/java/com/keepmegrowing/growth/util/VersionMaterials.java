@@ -32,11 +32,13 @@ public final class VersionMaterials {
     public static GrowthStageCapable c;
 
     private static String resolvedGameVersion;
+    private static int[] resolvedParts;
     private static boolean versionKnown;
 
     public static void a() {
         resolvedGameVersion = resolveGameVersion();
         versionKnown = resolvedGameVersion != null;
+        resolvedParts = versionKnown ? parseVersionParts(resolvedGameVersion) : null;
         if (!versionKnown) {
             return;
         }
@@ -56,6 +58,13 @@ public final class VersionMaterials {
 
     public static String getResolvedGameVersion() {
         return resolvedGameVersion;
+    }
+
+    public static boolean supportsEntityLoadEvents() {
+        if (resolvedParts == null) {
+            return false;
+        }
+        return resolvedParts[0] >= 26 || (resolvedParts[0] == 1 && resolvedParts[1] >= 17);
     }
 
     private static String resolveGameVersion() {
