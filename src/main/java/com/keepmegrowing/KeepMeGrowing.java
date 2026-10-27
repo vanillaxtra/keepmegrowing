@@ -12,6 +12,8 @@ import com.keepmegrowing.storage.ChunkEntitySnapshotService;
 import com.keepmegrowing.mob.MobGrowthRegistry;
 import com.keepmegrowing.listener.ChunkUnloadPersistenceListener;
 import com.keepmegrowing.listener.PlantBlockInteractListener;
+import com.keepmegrowing.listener.AdminJoinUpdateListener;
+import com.keepmegrowing.update.ModrinthUpdateChecker;
 import com.keepmegrowing.storage.PlantChunkStorage;
 import com.keepmegrowing.growth.CropGrowthRegistry;
 import com.keepmegrowing.integration.worldguard.KeepMeGrowingWorldGuard;
@@ -37,6 +39,7 @@ public class KeepMeGrowing extends JavaPlugin {
     private final GrowthRateController growthRateController = new GrowthRateController();
     private BukkitTask loadedCropGrowthTask;
     private BukkitTask loadedMobGrowthTask;
+    private ModrinthUpdateChecker updateChecker;
 
     @Override
     public void onLoad() {
@@ -107,6 +110,11 @@ public class KeepMeGrowing extends JavaPlugin {
         this.getCommand("growth").setExecutor(commands);
         this.getCommand("growth").setTabCompleter(commands);
         new Metrics(this, 31246);
+        this.updateChecker = new ModrinthUpdateChecker(this);
+        this.getServer()
+                .getPluginManager()
+                .registerEvents((Listener) new AdminJoinUpdateListener(this.updateChecker), (Plugin) this);
+        this.updateChecker.start();
         this.startLoadedGrowthSchedulers();
     }
 
