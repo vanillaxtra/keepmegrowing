@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.keepmegrowing"
-version = "2.1"
+version = "2.2"
 description = "KeepMeGrowing"
 
 java {
@@ -25,6 +25,8 @@ val bundleAllDbDrivers =
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
+    // Adventure components for update notifier (provided by Paper/Leaf at runtime)
+    compileOnly("net.kyori:adventure-api:4.17.0")
     compileOnly("org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.800")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.14")

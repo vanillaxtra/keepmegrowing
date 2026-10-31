@@ -1,5 +1,5 @@
 name: KeepMeGrowing
-version: '2.0'
+version: '2.2'
 description: KeepMeGrowing offline crop and passive mob pacing
 author: notauthorised
 main: com.keepmegrowing.KeepMeGrowing
@@ -20,4 +20,7 @@ commands:
 permissions:
   keepmegrowing.admin:
     description: KeepMeGrowing admin commands
+    default: op
+  keepmegrowing.update.notify:
+    description: In-game notice when a newer plugin version is on Modrinth/GitHub
     default: op

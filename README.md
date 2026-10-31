@@ -1,6 +1,6 @@
 # KeepMeGrowing
 
-[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](#readme)
+[![Version](https://img.shields.io/badge/version-2.2-blue.svg)](#readme)
 [![Platform](https://img.shields.io/badge/platform-Paper%20%7C%20Spigot-green.svg)](https://papermc.io/)
 [![bStats](https://img.shields.io/badge/bStats-metrics-00ADB5.svg)](https://bstats.org/plugin/bukkit/keepmegrowing/31246)
 
@@ -119,7 +119,7 @@ If the server version allows mob tracking, these types can receive offline-style
 
 ## Installation
 
-1. Build or download the **shadow** JAR `keepmegrowing-2.0.jar` (or `keepmegrowing-bundled-2.0.jar` if you need all DB drivers in one file).  
+1. Build or download the **shadow** JAR `keepmegrowing-2.2.jar` (or `keepmegrowing-bundled-2.2.jar` if you need all DB drivers in one file).  
 2. Place it in the server `plugins` folder.  
 3. Start the server; config is created under **`plugins/KeepMeGrowing/`**.  
 4. Edit `config.yml`, then `/growth reload` or `/keepmegrowing reload` (same permission).
