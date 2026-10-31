@@ -4,6 +4,8 @@ package com.keepmegrowing.growth.util;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
@@ -67,12 +69,68 @@ public final class VersionMaterials {
         return resolvedParts[0] >= 26 || (resolvedParts[0] == 1 && resolvedParts[1] >= 17);
     }
 
+    private static final Pattern MODERN_BUKKIT_VERSION =
+            Pattern.compile("(?:^|[\\s(])(\\d{2,})\\.(\\d+)");
+
     private static String resolveGameVersion() {
         String fromMc = readMinecraftVersion();
-        if (fromMc != null && parseVersionParts(fromMc) != null) {
-            return fromMc;
+        String normalized = normalizeGameVersion(fromMc);
+        if (normalized != null) {
+            return normalized;
+        }
+        String fromPaperBuild = readPaperMinecraftVersionId();
+        normalized = normalizeGameVersion(fromPaperBuild);
+        if (normalized != null) {
+            return normalized;
+        }
+        normalized = matchModernBukkitVersion(Bukkit.getBukkitVersion());
+        if (normalized != null) {
+            return normalized;
         }
         return matchLegacyBukkitVersion(Bukkit.getBukkitVersion());
+    }
+
+    /** e.g. 26.3, 26.3-rc2 -> 26.3 for feature gates */
+    static String normalizeGameVersion(String raw) {
+        int[] parts = parseVersionParts(raw);
+        if (parts == null) {
+            return null;
+        }
+        return parts[0] + "." + parts[1];
+    }
+
+    private static String readPaperMinecraftVersionId() {
+        try {
+            Class<?> info = Class.forName("io.papermc.paper.ServerBuildInfo");
+            Method buildInfo = info.getMethod("buildInfo");
+            Object build = buildInfo.invoke(null);
+            Method versionId = build.getClass().getMethod("minecraftVersionId");
+            Object value = versionId.invoke(build);
+            if (value instanceof String s && !s.isEmpty()) {
+                return s;
+            }
+        } catch (ReflectiveOperationException ignored) {
+        }
+        return null;
+    }
+
+    private static String matchModernBukkitVersion(String bukkitVersion) {
+        if (bukkitVersion == null || bukkitVersion.isEmpty()) {
+            return null;
+        }
+        Matcher matcher = MODERN_BUKKIT_VERSION.matcher(bukkitVersion);
+        if (!matcher.find()) {
+            return null;
+        }
+        try {
+            int major = Integer.parseInt(matcher.group(1));
+            int minor = Integer.parseInt(matcher.group(2));
+            if (major >= 26) {
+                return major + "." + minor;
+            }
+        } catch (NumberFormatException ignored) {
+        }
+        return null;
     }
 
     private static String readMinecraftVersion() {
@@ -113,14 +171,36 @@ public final class VersionMaterials {
     }
 
     private static int[] parseVersionParts(String version) {
+        if (version == null || version.isEmpty()) {
+            return null;
+        }
         String[] parts = version.split("\\.");
         if (parts.length < 2) {
             return null;
         }
-        try {
-            return new int[] {Integer.parseInt(parts[0]), Integer.parseInt(parts[1])};
-        } catch (NumberFormatException e) {
+        int major = leadingInt(parts[0]);
+        int minor = leadingInt(parts[1]);
+        if (major < 0 || minor < 0) {
             return null;
+        }
+        return new int[] {major, minor};
+    }
+
+    private static int leadingInt(String segment) {
+        if (segment == null || segment.isEmpty()) {
+            return -1;
+        }
+        int end = 0;
+        while (end < segment.length() && Character.isDigit(segment.charAt(end))) {
+            end++;
+        }
+        if (end == 0) {
+            return -1;
+        }
+        try {
+            return Integer.parseInt(segment.substring(0, end));
+        } catch (NumberFormatException e) {
+            return -1;
         }
     }
 

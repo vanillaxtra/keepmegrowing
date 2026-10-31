@@ -60,6 +60,13 @@ public class KeepMeGrowing extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin((Plugin) this);
             return;
         }
+        this.getLogger()
+                .info(
+                        "Running on Minecraft "
+                                + VersionMaterials.getResolvedGameVersion()
+                                + " (Bukkit: "
+                                + Bukkit.getBukkitVersion()
+                                + ")");
         this.saveDefaultConfig();
         File configFile = new File(this.getDataFolder(), "config.yml");
         ConfigDefaultsMerger.a(this, "config.yml", configFile, new ArrayList<>());
